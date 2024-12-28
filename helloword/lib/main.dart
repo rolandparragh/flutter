@@ -4,7 +4,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() {
   runApp(MyApp());
 }
-// distributionUrl=https\://services.gradle.org/distributions/gradle-8.1.1-all.zip
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
