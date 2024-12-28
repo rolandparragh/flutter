@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
 }
+// distributionUrl=https\://services.gradle.org/distributions/gradle-8.1.1-all.zip
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -13,10 +17,27 @@ class _MyAppState extends State<MyApp> {
   bool isProgressing = false;
   double progress = 0.0;
   int count = 0;
+  double _stored = 0;
 
   @override
   void initState() {
     super.initState();
+    _loadStored();
+  }
+
+  Future<void> _loadStored() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _stored = prefs.getDouble('stored') ?? 0;
+    });
+  }
+
+  Future<void> _setStored() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _stored = progress;
+      prefs.setDouble('stored', _stored);
+    });
   }
 
   void startProgres() {
@@ -82,8 +103,10 @@ class _MyAppState extends State<MyApp> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text("Count: ${count.toString()}"),
+                Text('Stored: ${_stored.toString()}'),
                 ElevatedButton(
                   onPressed: () {
+                    _setStored();
                     setState(() {
                       count = 0;
                       progress = 0.0;
