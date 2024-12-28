@@ -34,8 +34,8 @@ class _MyAppState extends State<MyApp> {
   Future<void> _setStored() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _stored = prefs.getDouble('stored') ?? 0;
       prefs.setDouble('stored', progress);
+      _stored = prefs.getDouble('stored') ?? 0;
     });
   }
 
@@ -97,22 +97,41 @@ class _MyAppState extends State<MyApp> {
                     }),
               ],
             ),
-            SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text("Count: ${count.toString()}"),
-                Text('Stored: ${_stored.toString()}'),
+                Text("Count: ${count.toStringAsFixed(2)}"),
+                Text('Stored: ${_stored.toStringAsFixed(2)}'),
                 ElevatedButton(
                   onPressed: () {
                     _setStored();
                     setState(() {
                       count = 0;
-
-                      isProgressing = false;
+                      // isProgressing = false;
                     });
                   },
                   child: Text('Reset the counter'),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    height: 50,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.blue.withOpacity(0.1),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30.0)),
+                        hintText: "How long should it run?",
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
