@@ -34,8 +34,8 @@ class _MyAppState extends State<MyApp> {
   Future<void> _setStored() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _stored = progress;
-      prefs.setDouble('stored', _stored);
+      _stored = prefs.getDouble('stored') ?? 0;
+      prefs.setDouble('stored', progress);
     });
   }
 
@@ -108,7 +108,7 @@ class _MyAppState extends State<MyApp> {
                     _setStored();
                     setState(() {
                       count = 0;
-                      progress = 0.0;
+
                       isProgressing = false;
                     });
                   },
