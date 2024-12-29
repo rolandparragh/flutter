@@ -17,25 +17,25 @@ class _MyAppState extends State<MyApp> {
   double progress = 0.0;
   int count = 0;
   double _stored = 0;
- late SharedPreferences _prefs;
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    _prefs = await SharedPreferences.getInstance();
     _loadStored();
   }
 
   Future<void> _loadStored() async {
+    final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _stored = _prefs.getDouble('stored') ?? 0;
+      _stored = prefs.getDouble('stored') ?? 0;
     });
   }
 
   Future<void> _setStored() async {
+    final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _prefs.setDouble('stored', progress);
-      _stored = _prefs.getDouble('stored') ?? 0;
+      _stored = progress;
+      prefs.setDouble('stored', progress);
     });
   }
 
