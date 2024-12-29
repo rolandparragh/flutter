@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+const String progressKey = 'progress';
+const String countKey = 'count';
 void main() {
   runApp(MyApp());
 }
@@ -27,7 +29,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> _loadStored() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _stored = prefs.getDouble('stored') ?? 0;
+      _stored = prefs.getDouble(progressKey) ?? 0;
     });
   }
 
@@ -35,7 +37,7 @@ class _MyAppState extends State<MyApp> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _stored = progress;
-      prefs.setDouble('stored', progress);
+      prefs.setDouble(progressKey, progress);
     });
   }
 
@@ -100,7 +102,7 @@ class _MyAppState extends State<MyApp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text("Count: ${count.toStringAsFixed(2)}"),
+                Text('Count: ${count.toStringAsFixed(2)}'	),
                 Text('Stored: ${_stored.toStringAsFixed(2)}'),
                 ElevatedButton(
                   onPressed: () {
