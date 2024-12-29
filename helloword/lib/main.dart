@@ -17,43 +17,43 @@ class _MyAppState extends State<MyApp> {
   double progress = 0.0;
   int count = 0;
   double _stored = 0;
+ late SharedPreferences _prefs;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
+    _prefs = await SharedPreferences.getInstance();
     _loadStored();
   }
 
   Future<void> _loadStored() async {
-    final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _stored = prefs.getDouble('stored') ?? 0;
+      _stored = _prefs.getDouble('stored') ?? 0;
     });
   }
 
   Future<void> _setStored() async {
-    final prefs = await SharedPreferences.getInstance();
     setState(() {
-      prefs.setDouble('stored', progress);
-      _stored = prefs.getDouble('stored') ?? 0;
+      _prefs.setDouble('stored', progress);
+      _stored = _prefs.getDouble('stored') ?? 0;
     });
   }
 
-  void startProgres() {
+  void startProgress() {
     if (isProgressing) {
       Future.delayed(Duration(milliseconds: 100), () {
         if (isProgressing && progress <= 1.0) {
           setState(() {
             progress += 0.02;
           });
-          startProgres();
+          startProgress();
         } else if (progress >= 1.0) {
           setState(() {
             count += 1;
             progress = 0.0;
           });
 
-          startProgres();
+          startProgress();
         }
       });
     }
@@ -91,7 +91,7 @@ class _MyAppState extends State<MyApp> {
                         isProgressing = value;
                         if (isProgressing) {
                           progress = 0.0;
-                          startProgres();
+                          startProgress();
                         }
                       });
                     }),
