@@ -131,27 +131,6 @@ class MyAppState extends State<MyApp> {
               ],
             ),
             SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    height: 50,
-                    child: TextField(
-                      controller: controller,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.blue.withOpacity(0.1),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0)),
-                        hintText: "How long should it run?",
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),
