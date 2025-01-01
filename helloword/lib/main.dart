@@ -1,62 +1,77 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-const String progressKey = 'progress';
-const String countKey = 'count';
 void main() {
-  runApp(MyApp());
+  runApp(MaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   bool isProgressing = false;
   double progress = 0.0;
   int count = 0;
-  double _stored = 0;
+
+  final controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _loadStored();
   }
 
-  Future<void> _loadStored() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _stored = prefs.getDouble(progressKey) ?? 0;
-    });
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
-  Future<void> _setStored() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _stored = progress;
-      prefs.setDouble(progressKey, progress);
-    });
-  }
-
-  void startProgress() {
+  void startProgres() {
     if (isProgressing) {
       Future.delayed(Duration(milliseconds: 100), () {
         if (isProgressing && progress <= 1.0) {
           setState(() {
             progress += 0.02;
           });
-          startProgress();
+          startProgres();
         } else if (progress >= 1.0) {
           setState(() {
             count += 1;
             progress = 0.0;
           });
-
-          startProgress();
+          itterationLimiter();
+          startProgres();
         }
+      });
+    }
+  }
+
+  void itterationLimiter() {
+    final int? limit = int.tryParse(controller.text);
+    if (limit != null && count >= limit) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text('You have reached the given limit'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      setState(() {
+        isProgressing = false;
+        count = 0;
+        progress = 0.0;
       });
     }
   }
@@ -93,7 +108,7 @@ class _MyAppState extends State<MyApp> {
                         isProgressing = value;
                         if (isProgressing) {
                           progress = 0.0;
-                          startProgress();
+                          startProgres();
                         }
                       });
                     }),
@@ -102,14 +117,13 @@ class _MyAppState extends State<MyApp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text('Count: ${count.toStringAsFixed(2)}'	),
-                Text('Stored: ${_stored.toStringAsFixed(2)}'),
+                Text("Count: ${count.toStringAsFixed(2)}"),
                 ElevatedButton(
                   onPressed: () {
-                    _setStored();
                     setState(() {
                       count = 0;
-                      // isProgressing = false;
+                      isProgressing = false;
+                      progress = 0.0;
                     });
                   },
                   child: Text('Reset the counter'),
@@ -125,6 +139,7 @@ class _MyAppState extends State<MyApp> {
                     width: MediaQuery.of(context).size.width * 0.6,
                     height: 50,
                     child: TextField(
+                      controller: controller,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: Colors.blue.withOpacity(0.1),
